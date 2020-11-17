@@ -10,7 +10,8 @@ const mailgun = require('mailgun-js')({
 })
 
 const sendMailToCompleteRegistration = async (mail, linc) => {
-  const message = `To confirm registration, follow the link or ignore this message. ${linc}`
+  try {
+      const message = `To confirm registration, follow the link or ignore this message. ${linc}`
   const adresFile = resolve(process.cwd(), './utils/mailgun/confirmationEmail.html')
   
   const htmlTemplate = await readFile(adresFile, 'utf8')
@@ -30,6 +31,10 @@ const sendMailToCompleteRegistration = async (mail, linc) => {
     console.log('mailgun error', error)
     console.log('mailgun body', body)
   })
+  } catch (error) {
+    return new Error('mailgun error')
+  }
+
 }
 
 export default sendMailToCompleteRegistration
