@@ -1,5 +1,4 @@
-import '../css/style.css'
-import '../css/form.css'
+import '../css/style.scss'
 import Head from 'next/head'
 import Link from 'next/link'
 
@@ -17,6 +16,9 @@ function MyApp({ Component, pageProps }) {
           </Link>
           <Link href="/new">
             <a>Add Pet</a>
+          </Link>
+          <Link href="/signIn">
+            <a>Sign In</a>
           </Link>
         </div>
 

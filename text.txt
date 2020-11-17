@@ -1,0 +1,7 @@
+sudo npm install -g vercel
+vercel -v
+vercel login
+e-mail...
+
+vercel env pul - creste .env
+vercel
