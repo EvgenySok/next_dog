@@ -20,6 +20,7 @@ export default async function handler(req, res) {
     case 'POST':
       try {
         const { email, password } = req.body
+
         const candidate = await Candidate.findOne({ email })
         const user = await User.findOne({ email })
         if (user) {
@@ -44,7 +45,6 @@ export default async function handler(req, res) {
       } catch (error) {
         res.status(500).json([{
           msg: 'Error while registering user on the server.',
-          param: 'error',
           error: error.message
         }])
       }

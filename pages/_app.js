@@ -2,7 +2,7 @@ import '../css/style.scss'
 import Head from 'next/head'
 import Link from 'next/link'
 
-function MyApp({ Component, pageProps }) {
+function App({ Component, pageProps }) {
   return (
     <>
       <Head>
@@ -20,6 +20,12 @@ function MyApp({ Component, pageProps }) {
           <Link href="/signIn">
             <a>Sign In</a>
           </Link>
+
+            <a href="/api/auth/logOut">Log Out</a>
+
+          <Link href="/privatePage">
+            <a>Private Page</a>
+          </Link>
         </div>
 
         <img
@@ -35,4 +41,4 @@ function MyApp({ Component, pageProps }) {
   )
 }
 
-export default MyApp
+export default App

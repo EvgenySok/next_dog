@@ -1,11 +1,11 @@
 const { readFile } = require('fs').promises
 const { resolve } = require('path')
 
-const { MAILGUN_API_KEY, DOMAIN } = process.env
+const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
 
 const mailgun = require('mailgun-js')({
   apiKey: MAILGUN_API_KEY,
-  domain: DOMAIN,
+  domain: MAILGUN_DOMAIN,
   host: 'api.eu.mailgun.net',
 })
 
@@ -15,8 +15,6 @@ const sendMailToCompleteRegistration = async (mail, linc) => {
 
     const htmlTemplate = await readFile(adresFile, 'utf8')
     const html = htmlTemplate.replace(/%%URL%%/g, linc);
-
-    console.log('html:', html)
 
     const data = {
       from: 'Excited User <me@samples.mailgun.org>',

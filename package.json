@@ -8,15 +8,19 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie": "^0.4.1",
     "formik": "^2.2.5",
+    "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.22.0",
-    "mongoose": "^5.9.13",
+    "mongoose": "^5.10.15",
     "next": "^9.4.2",
+    "next-iron-session": "^4.1.10",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "sass": "^1.29.0",
     "shortid": "^2.2.16",
-    "swr": "0.2.2"
+    "swr": "0.2.2",
+    "yup": "^0.30.0"
   },
   "license": "MIT"
 }

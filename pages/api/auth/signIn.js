@@ -1,29 +1,65 @@
-// import { withIronSession } from "next-iron-session";
+import { withIronSession } from "next-iron-session"
+import { serialize } from 'cookie'
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
-// const VALID_EMAIL = "chris@decimal.fm";
-// const VALID_PASSWORD = "opensesame";
+import dbConnect from '../../../utils/dbConnect'
 
-// export default withIronSession(
-//   async (req, res) => {
-//     if (req.method === "POST") {
-//       const { email, password } = req.body;
+import User from "../../../models/User"
+import { ironSessionParam } from "../../../utils/iron-session"
 
-//       if (email === VALID_EMAIL && password === VALID_PASSWORD) {
-//         req.session.set("user", { email });
-//         await req.session.save();
-//         return res.status(201).send("");
-//       }
+export default withIronSession(
+  async (req, res) => {
+    const { method } = req
+    await dbConnect()
 
-//       return res.status(403).send("");
-//     }
+    switch (method) {
+      case 'GET':
+        try {
+        } catch (error) {
+        }
+        break
+      case 'POST':
+        try {
+          const { email, password } = req.body;
 
-//     return res.status(404).send("");
-//   },
-//   {
-//     cookieName: "MYSITECOOKIE",
-//     cookieOptions: {
-//       secure: process.env.NODE_ENV === "production" ? true : false
-//     },
-//     password: process.env.APPLICATION_SECRET
-//   }
-// );
+          const user = await User.findOne({ email })
+
+          if (!user) {
+            return res.status(403).json([{ msg: 'Invalid login details', param: 'email' }])
+          }
+
+          const isMatch = await bcrypt.compare(password, user.password)
+
+          if (!isMatch) {
+            return res.status(403).json([{ msg: 'Invalid login details', param: 'email' }])
+          }
+
+          //========= set Cookie =========
+          // setHeader(headerName: string, cookies: string | string[])
+          // can use array for multiple cookies
+          const jwt_payload = { userId: user.id }
+          const token = jwt.sign(jwt_payload, process.env.SECRET_JWT, { expiresIn: '48h' })
+          res.setHeader('Set-Cookie', serialize('token', token, { path: '/', maxAge: (60 * 60 * 24) * 2 }))
+          //========= set Cookie =========
+
+          req.session.set("user", { email }) // add data here
+
+          await req.session.save()
+          return res.status(201).send("")
+
+        } catch (error) {
+          res.status(403).json([{
+            msg: 'Error while sign in user on the server.',
+            param: 'error',
+            error: error.message
+          }])
+        }
+        break
+      default:
+        res.status(404).json(new Error('Request sign in not defined.'))
+        break
+    }
+  },
+  ironSessionParam
+);

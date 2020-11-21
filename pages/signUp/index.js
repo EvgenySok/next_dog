@@ -1,56 +1,37 @@
-import React from 'react';
-import { Formik } from 'formik';
+import React, { useRef, useCallback } from 'react'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { postData } from '../../secondary-functions/requests'
+import { SignupSchema } from '../../validate/authValidate'
 
 const SignUp = () => {
-  const contentType = 'application/json'
+  const formikRef = useRef();
 
-  const postData = async (form) => {
-    try {
-      const res = await fetch('/api/auth/signUp', {
-        method: 'POST',
-        headers: {
-          Accept: contentType,
-          'Content-Type': contentType,
-        },
-        body: JSON.stringify(form),
-      })
+  const onSubmit = useCallback((values) => {
+    async function foo() {
+      try {
+        const errorsFromServer = await postData(values, '/api/auth/signUp')
+        const errorsFoClient = errorsFromServer.reduce((acc, e) => ({ ...acc, [e.param]: e.msg }), {})
+        formikRef.current.setErrors(errorsFoClient)
+        formikRef.current.setSubmitting(false)
 
-      console.log('res.body:', res.body)
-      
-      // Throw error with status code in case Fetch API req failed
-      if (!res.ok) {
-        throw new Error(res.status)
+      } catch (e) {
+        formikRef.current.setErrors({ error: 'Sorry, something went wrong, please try again.' })
+        formikRef.current.setSubmitting(false)
+
       }
-
-      router.push('/')
-    } catch (error) {
-      console.log('error:', error.message)
-
-      // setMessage('Failed to add pet')
     }
+    foo()
   }
+  )
+
   return (
     <>
       <h1>User registration</h1>
       <Formik
+        innerRef={formikRef}
         initialValues={{ email: '', password: '' }}
-        validate={values => {
-          const errors = {};
-          if (!values.email) {
-            errors.email = 'Required';
-          } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-          ) {
-            errors.email = 'Invalid email address';
-          }
-          return errors;
-        }}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            postData(values)
-            setSubmitting(false);
-          }, 1000);
-        }}
+        validationSchema={SignupSchema}
+        onSubmit={onSubmit}
       >
         {({
           values,
@@ -61,33 +42,24 @@ const SignUp = () => {
           handleSubmit,
           isSubmitting,
           /* and other goodies */
-        }) => (
+        }) => {
+          console.log('values:', values, 'errors', errors)
+          return (
             <form onSubmit={handleSubmit}>
               <p>email</p>
-              <input
-                type="email"
-                name="email"
-                placeholder="email"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.email}
-              />
-              {errors.email && touched.email && errors.email}
+              <Field type="email" name="email" />
+              <ErrorMessage name="email" component="div" />
               <p>password</p>
-              <input
-                type="password"
-                name="password"
-                placeholder="password"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.password}
-              />
-              {errors.password && touched.password && errors.password}
+              <Field type="password" name="password" autoComplete="new-password" />
+              <ErrorMessage name="password" component="div" />
+              {errors.success ? (<div>{errors.success} </div>) : null}
+              {errors.error ? (<div>{errors.error} </div>) : null}
               <button type="submit" disabled={isSubmitting}>
                 Submit
-          </button>
+              </button>
             </form>
-          )}
+          )
+        }}
       </Formik>
     </>)
 }
