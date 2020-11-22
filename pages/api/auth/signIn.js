@@ -7,6 +7,7 @@ import dbConnect from '../../../utils/dbConnect'
 
 import User from "../../../models/User"
 import { ironSessionParam } from "../../../utils/iron-session"
+import { SigninValidateSchema } from "../../../validate/authValidate"
 
 export default withIronSession(
   async (req, res) => {
@@ -21,18 +22,29 @@ export default withIronSession(
         break
       case 'POST':
         try {
-          const { email, password } = req.body;
+          const validateErrors = await SigninValidateSchema.validate(req.body, { abortEarly: false })
+            .then(() => null)
+            .catch((err) => {
+              const errorsForFormik = err.inner.reduce((acc, it) => ({ ...acc, [it.path]: it.errors.join(' ') }), {})
+              return errorsForFormik
+            })
+
+          if (validateErrors) {
+            return res.status(403).json(validateErrors)
+          }
+          
+          const { email, password } = req.body
 
           const user = await User.findOne({ email })
 
           if (!user) {
-            return res.status(403).json([{ msg: 'Invalid login details', param: 'email' }])
+            return res.status(403).json({ error: 'Is at least one field filled in incorrectly' })
           }
 
           const isMatch = await bcrypt.compare(password, user.password)
 
           if (!isMatch) {
-            return res.status(403).json([{ msg: 'Invalid login details', param: 'email' }])
+            return res.status(403).json({ error: 'Is at least one field filled in incorrectly' })
           }
 
           //========= set Cookie =========

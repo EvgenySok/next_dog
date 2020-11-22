@@ -1,7 +1,7 @@
 import React, { useRef, useCallback } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { postData } from '../../secondary-functions/requests'
-import { SignupSchema } from '../../validate/authValidate'
+import { SignupValidateSchema } from '../../validate/authValidate'
 
 const SignUp = () => {
   const formikRef = useRef();
@@ -10,8 +10,7 @@ const SignUp = () => {
     async function foo() {
       try {
         const errorsFromServer = await postData(values, '/api/auth/signUp')
-        const errorsFoClient = errorsFromServer.reduce((acc, e) => ({ ...acc, [e.param]: e.msg }), {})
-        formikRef.current.setErrors(errorsFoClient)
+        formikRef.current.setErrors(errorsFromServer)
         formikRef.current.setSubmitting(false)
 
       } catch (e) {
@@ -21,16 +20,15 @@ const SignUp = () => {
       }
     }
     foo()
-  }
-  )
+  })
 
   return (
-    <>
+    <div>
       <h1>User registration</h1>
       <Formik
         innerRef={formikRef}
         initialValues={{ email: '', password: '' }}
-        validationSchema={SignupSchema}
+        validationSchema={SignupValidateSchema}
         onSubmit={onSubmit}
       >
         {({
@@ -42,14 +40,12 @@ const SignUp = () => {
           handleSubmit,
           isSubmitting,
           /* and other goodies */
-        }) => {
-          console.log('values:', values, 'errors', errors)
-          return (
+        }) => (
             <form onSubmit={handleSubmit}>
-              <p>email</p>
+              <h3>email</h3>
               <Field type="email" name="email" />
               <ErrorMessage name="email" component="div" />
-              <p>password</p>
+              <h3>password</h3>
               <Field type="password" name="password" autoComplete="new-password" />
               <ErrorMessage name="password" component="div" />
               {errors.success ? (<div>{errors.success} </div>) : null}
@@ -59,8 +55,8 @@ const SignUp = () => {
               </button>
             </form>
           )
-        }}
+        }
       </Formik>
-    </>)
+    </div>)
 }
 export default SignUp

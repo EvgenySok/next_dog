@@ -1,5 +1,6 @@
 import React from "react";
 import { withIronSession } from "next-iron-session";
+import { ironSessionParam } from "../utils/iron-session";
 
 const PrivatePage = ({ user }) => (
   <div>
@@ -10,7 +11,7 @@ const PrivatePage = ({ user }) => (
 
 export const getServerSideProps = withIronSession(
   async ({ req, res }) => {
-    const user = req.session.get("user")
+    const user = req.session.get("user") ? req.session.get("user") : null
 
     if (!user) {
       res.statusCode = 404
@@ -21,14 +22,6 @@ export const getServerSideProps = withIronSession(
     return {
       props: { user }
     }
-  },
-  {
-    cookieName: "SITECOOKIE",
-    cookieOptions: {
-      secure: process.env.NODE_ENV === "production" ? true : false
-    },
-    password: process.env.APPLICATION_SECRET
-  }
-)
+  }, ironSessionParam)
 
 export default PrivatePage
