@@ -5,3 +5,6 @@ e-mail...
 
 vercel env pul - creste .env
 vercel
+
+
+sudo npm install -g vercel@latest

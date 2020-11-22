@@ -32,7 +32,7 @@ export default withIronSession(
           if (validateErrors) {
             return res.status(403).json(validateErrors)
           }
-          
+
           const { email, password } = req.body
 
           const user = await User.findOne({ email })
@@ -58,7 +58,7 @@ export default withIronSession(
           req.session.set("user", { email }) // add data here
 
           await req.session.save()
-          return res.status(201).send("")
+          return res.status(201).json({ success: 'Login successful.' })
 
         } catch (error) {
           res.status(403).json([{

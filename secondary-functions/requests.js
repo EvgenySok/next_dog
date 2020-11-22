@@ -11,7 +11,6 @@ export const postData = async (data, linc) => {
       body: JSON.stringify(data),
     })
     const response = await res.json()
-    console.log('res.json() ', response)
     return response
 
     // Throw error with status code in case Fetch API req failed

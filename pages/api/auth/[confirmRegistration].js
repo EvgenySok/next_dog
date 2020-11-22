@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
           await user.save()
 
-          return res.status(201).redirect('/')
+          return res.status(201).redirect('/signIn')
         }
         return res.status(500).json([{ msg: 'Registration error, invalid link or expired', param: 'link' }])
 
