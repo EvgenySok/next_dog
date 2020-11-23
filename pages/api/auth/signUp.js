@@ -19,6 +19,7 @@ export default async function handler(req, res) {
       }
       break
     case 'POST':
+      let newCandidate = {}
       try {
 
         const validateErrors = await SignupValidateSchema.validate(req.body, { abortEarly: false })
@@ -48,14 +49,21 @@ export default async function handler(req, res) {
         let secretLinc = await bcrypt.hash(shortid.generate(), 12)
         secretLinc = [...secretLinc].filter((it) => it !== '/').join('')
 
-        const newCandidate = await Candidate.create({ secretLinc, email, password: hashedPassword, })
+        newCandidate = new Candidate({ secretLinc, email, password: hashedPassword })
+        await newCandidate.save()
+        console.log('newCandidate:', newCandidate)
+
 
         const temporaryLinc = `${process.env.URL}/api/auth/${secretLinc}`
 
-        await sendMailToCompleteRegistration(email, temporaryLinc)
+        const result = await sendMailToCompleteRegistration(email, temporaryLinc)
 
         res.status(201).json({ success: 'User created. To complete the resistance, follow the link in the mail.' })
       } catch (error) {
+
+        if (newCandidate) {
+          await Candidate.findByIdAndRemove(newCandidate.id)
+        }
         res.status(500).json([{
           msg: 'Error while registering user on the server.',
           error: error.message

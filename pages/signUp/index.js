@@ -10,7 +10,9 @@ const SignUp = () => {
     async function foo() {
       try {
         const errorsFromServer = await postData(values, '/api/auth/signUp')
-        formikRef.current.setErrors(errorsFromServer)
+        if (errorsFromServer) {
+          formikRef.current.setErrors(errorsFromServer)
+        }
         formikRef.current.setSubmitting(false)
 
       } catch (e) {

@@ -12,9 +12,9 @@ const SignIn = () => {
 		async function foo() {
 			try {
 				const errorsFromServer = await postData(values, '/api/auth/signIn')
-				console.log('errorsFromServer:', errorsFromServer)
-
-				formikRef.current.setErrors(errorsFromServer)
+				if (errorsFromServer) {
+					formikRef.current.setErrors(errorsFromServer)
+				}
 				formikRef.current.setSubmitting(false)
 			} catch (e) {
 				formikRef.current.setErrors({ error: 'Sorry, something went wrong, please try again.' })
@@ -25,6 +25,9 @@ const SignIn = () => {
 	})
 
 	function onSignIn(googleUser) {
+		var id_token = googleUser.getAuthResponse().id_token;
+		console.log('id_token: ' + id_token); // Do not send to your backend! Use an ID token instead.
+
 		var profile = googleUser.getBasicProfile();
 		console.log('profile: ' + profile); // Do not send to your backend! Use an ID token instead.
 		console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
@@ -37,7 +40,7 @@ const SignIn = () => {
 		<div>
 			<Head>
 				<script src="https://apis.google.com/js/platform.js" async defer/>
-				<meta name="google-signin-client_id" content="44319531168-s6t9845kpp30cb9tqfi8gs67054luuge.apps.googleusercontent.com" />
+				<meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} />
 			</Head>
 
 			<div>
