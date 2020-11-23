@@ -9,6 +9,6 @@ const CandidateSchema = new Schema({
   { timestamps: true }
 )
 
-CandidateSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 })
+CandidateSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 })
 
 export default models.Candidate || model('Candidate', CandidateSchema)
