@@ -46,8 +46,11 @@ const SignIn = () => {
 				const GoogleUserId = GoogleUser.getId()
 				console.log('GoogleUserId: ' + GoogleUserId)
 
+				var GoogleUserId_token = googleUser.getAuthResponse().id_token
+				console.log('GoogleUserId_token: ' + GoogleUserId_token)
+
 				const GoogleUserBasicProfile = GoogleUser.getBasicProfile()
-				console.log('GoogleUserBasicProfile: ' + GoogleUserBasicProfile)
+				console.log('GoogleUserBasicProfile: ' + JSON.stringify(GoogleUserBasicProfile,2,2))
 
 			})
 		})
