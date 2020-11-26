@@ -24,23 +24,47 @@ const SignIn = () => {
 		foo()
 	})
 
-	function onSignIn(googleUser) {
-		var id_token = googleUser.getAuthResponse().id_token;
-		console.log('id_token: ' + id_token); // Do not send to your backend! Use an ID token instead.
+	async function onSignIn() {
+		gapi.load('auth2', function () {
+			 gapi.auth2.init({
+				client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+			}).then((res) => {
+				if (res.error) {
+					console.log('Google authorization error.', res.error)
+					return
+				}
 
-		var profile = googleUser.getBasicProfile();
-		console.log('profile: ' + profile); // Do not send to your backend! Use an ID token instead.
-		console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-		console.log('Name: ' + profile.getName());
-		console.log('Image URL: ' + profile.getImageUrl());
-		console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+				const GoogleAuth = gapi.auth2.getAuthInstance()
+				
+				const isSignedIn = GoogleAuth.isSignedIn.get()
+				console.log('isSignedIn: ' + isSignedIn)
+
+
+				const GoogleUser = GoogleAuth.currentUser.get()
+				console.log('GoogleUser: ' + JSON.stringify(GoogleUser, 2, 2))
+
+				const GoogleUserId = GoogleUser.getId()
+				console.log('GoogleUserId: ' + GoogleUserId)
+
+				const GoogleUserBasicProfile = GoogleUser.getBasicProfile()
+				console.log('GoogleUserBasicProfile: ' + GoogleUserBasicProfile)
+
+			})
+		})
+	}
+
+	function signOut() {
+		var auth2 = gapi.auth2.getAuthInstance();
+		auth2.signOut().then(function () {
+			console.log('User signed out.');
+		});
 	}
 
 	return (
-		<div>
+		<>
 			<Head>
-				<script src="https://apis.google.com/js/platform.js" async defer/>
-				<meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} />
+				<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+				{/* <meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} /> */}
 			</Head>
 
 			<div>
@@ -87,10 +111,13 @@ const SignIn = () => {
 
 					</div>
 					<br />
-					<div className="g-signin2" data-onsuccess="onSignIn" ></div>
+					<a href="#" onClick={onSignIn}>Sign in with Google</a>
+
+					<br />
+					<a href="#" onClick={signOut}>Sign out</a>
 				</div>
 			</div >
-		</div>
+		</>
 	)
 }
 
