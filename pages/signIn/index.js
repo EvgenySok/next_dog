@@ -46,7 +46,7 @@ const SignIn = () => {
 				const GoogleUserId = GoogleUser.getId()
 				console.log('GoogleUserId: ' + GoogleUserId)
 
-				var GoogleUserId_token = googleUser.getAuthResponse().id_token
+				var GoogleUserId_token = GoogleUser.getAuthResponse().id_token
 				console.log('GoogleUserId_token: ' + GoogleUserId_token)
 
 				const GoogleUserBasicProfile = GoogleUser.getBasicProfile()
@@ -67,7 +67,6 @@ const SignIn = () => {
 		<>
 			<Head>
 				<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
-				{/* <meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} /> */}
 			</Head>
 
 			<div>
