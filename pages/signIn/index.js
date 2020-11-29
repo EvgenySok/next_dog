@@ -54,7 +54,7 @@ const SignIn = () => {
 
 	// facebook // 
 	async function signInWithFacebook() {
-		FB.login(function (response) {
+		await FB.login(function (response) {
 			console.log('response facebook:', response);
 
 			if (response.status === 'connected') {
@@ -64,13 +64,24 @@ const SignIn = () => {
 			}
 		})
 	}
+	// https://next-dog.vercel.app/api/auth/OAuth
 	return (
 		<>
 			<Head>
 				<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
 				<meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}></meta>
 
-				<script async defer crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+				<script>
+					window.fbAsyncInit = function() {
+						FB.init({
+							appId: `${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`,
+							autoLogAppEvents: true,
+							xfbml: true,
+							version: `${process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION}`,
+						})
+					}
+				</script>
+				<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 
 			</Head>
 
