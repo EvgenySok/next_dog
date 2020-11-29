@@ -23,35 +23,23 @@ const SignIn = () => {
 		}
 		foo()
 	})
-
-	async function onSignIn() {
+	// google //
+	async function signInWithGoogle() {
 		gapi.load('auth2', function () {
-			 gapi.auth2.init({
+			gapi.auth2.init({
 				client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
 			}).then((res) => {
 				if (res.error) {
 					console.log('Google authorization error.', res.error)
 					return
 				}
-
 				const GoogleAuth = gapi.auth2.getAuthInstance()
-				
-				const isSignedIn = GoogleAuth.isSignedIn.get()
-				console.log('isSignedIn: ' + isSignedIn)
 
-
-				const GoogleUser = GoogleAuth.currentUser.get()
-				console.log('GoogleUser: ' + JSON.stringify(GoogleUser, 2, 2))
-
-				const GoogleUserId = GoogleUser.getId()
-				console.log('GoogleUserId: ' + GoogleUserId)
-
-				var GoogleUserId_token = GoogleUser.getAuthResponse().id_token
-				console.log('GoogleUserId_token: ' + GoogleUserId_token)
-
-				const GoogleUserBasicProfile = GoogleUser.getBasicProfile()
-				console.log('GoogleUserBasicProfile: ' + JSON.stringify(GoogleUserBasicProfile,2,2))
-
+				if (GoogleAuth.isSignedIn.get()) {
+					const GoogleUser = GoogleAuth.currentUser.get()
+					const GoogleUserId_token = GoogleUser.getAuthResponse(true).id_token
+					postData({ provider: 'google', GoogleUserId_token }, '/api/auth/OAuth')
+				}
 			})
 		})
 	}
@@ -63,10 +51,27 @@ const SignIn = () => {
 		});
 	}
 
+
+	// facebook // 
+	async function signInWithFacebook() {
+		FB.login(function (response) {
+			console.log('response facebook:', response);
+
+			if (response.status === 'connected') {
+				// Logged into your webpage and Facebook.
+			} else {
+				// The person is not logged into your webpage or we are unable to tell. 
+			}
+		})
+	}
 	return (
 		<>
 			<Head>
 				<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+				<meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}></meta>
+
+				<script async defer crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
 			</Head>
 
 			<div>
@@ -113,10 +118,15 @@ const SignIn = () => {
 
 					</div>
 					<br />
-					<a href="#" onClick={onSignIn}>Sign in with Google</a>
-
+					<a href="#" onClick={signInWithGoogle}>Sign in with Google</a>
 					<br />
 					<a href="#" onClick={signOut}>Sign out</a>
+
+					<br />
+					<a href="#" onClick={signInWithFacebook}>Sign in with Facebook</a>
+					<br />
+					<a href="#" onClick={signOut}>Sign out</a>
+
 				</div>
 			</div >
 		</>
