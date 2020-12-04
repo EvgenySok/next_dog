@@ -20,9 +20,8 @@ export default async function handler(req, res) {
         const img = Buffer.from(base64, 'base64')
         const temp_filepath = path.join(os.tmpdir(), filename);
         await fs.outputFile(temp_filepath, img, {});
-
-        // Upload.
-        const storage = new Storage({ projectId: 'next-dog-509c7', keyFilename: "next-dog-85dc29690db4.json" })
+        
+        const storage = new Storage({ projectId: 'next-dog-509c7', keyFilename: "./next-dog-85dc29690db4.json" })
         const bucketName = 'next-dog-509c7.appspot.com'
         const bucket = storage.bucket(bucketName)
 
