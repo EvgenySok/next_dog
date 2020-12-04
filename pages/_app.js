@@ -17,11 +17,14 @@ function App({ Component, pageProps }) {
           <Link href="/new">
             <a>Add Pet</a>
           </Link>
+          <Link href="/createNews">
+            <a>Create news</a>
+          </Link>
           <Link href="/signIn">
             <a>Sign In</a>
           </Link>
 
-            <a href="/api/auth/logOut">Log Out</a>
+          <a href="/api/auth/logOut">Log Out</a>
 
           <Link href="/privatePage">
             <a>Private Page</a>

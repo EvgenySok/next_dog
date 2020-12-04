@@ -22,18 +22,9 @@ export default withIronSession(
         break
       case 'POST':
         try {
-          const validateErrors = await SigninValidateSchema.validate(req.body, { abortEarly: false })
-            .then(() => null)
-            .catch((err) => {
-              const errorsForFormik = err.inner.reduce((acc, it) => ({ ...acc, [it.path]: it.errors.join(' ') }), {})
-              return errorsForFormik
-            })
+          const validatedData = await SigninValidateSchema.validate(req.body, { abortEarly: false })
 
-          if (validateErrors) {
-            return res.status(403).json(validateErrors)
-          }
-
-          const { email, password } = req.body
+          const { email, password } = validatedData
 
           const user = await User.findOne({ email })
 
@@ -52,19 +43,32 @@ export default withIronSession(
           // can use array for multiple cookies
           const jwt_payload = { userId: user.id }
           const token = jwt.sign(jwt_payload, process.env.SECRET_JWT, { expiresIn: '48h' })
-          res.setHeader('Set-Cookie', serialize('token', token, { path: '/', maxAge: (60 * 60 * 24) * 2 }))
+          await res.setHeader('Set-Cookie', serialize('token', token, { path: '/', maxAge: (60 * 60 * 24) * 2 }))
           //========= set Cookie =========
 
           req.session.set("user", { email }) // add data here
 
-          await req.session.save()
+
+          await req.session.save().catch(err => {
+          console.log('err', err)
+            
+          })
+
+
           return res.status(201).json({ success: 'Login successful.' })
 
         } catch (error) {
+
+          if (error.name === 'ValidationError') {
+            const errorsForFormik = error.inner.reduce((acc, it) => ({ ...acc, [it.path]: it.errors.join(' ') }), {})
+            return res.status(403).json(errorsForFormik)
+          }
+
           res.status(403).json([{
             msg: 'Error while sign in user on the server.',
             param: 'error',
-            error: error.message
+            error: error.message,
+            error,
           }])
         }
         break

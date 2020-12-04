@@ -13,14 +13,8 @@ export const postData = async (data, linc) => {
     const response = await res.json()
     return response
 
-    // Throw error with status code in case Fetch API req failed
-    // if (!res.ok) {
-    //   throw new Error(res.status)
-    // }
-
   } catch (error) {
     console.log('error:', error.message)
-
-    // setMessage('Failed to add pet')
+    return new Error('Error postData')
   }
 }
