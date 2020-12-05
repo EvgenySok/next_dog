@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as os from 'os';
 import * as fs from 'fs-extra';
 import dbConnect from '../../../utils/dbConnect';
 import createKeyJson, { pathGoogleKey } from '../../../utils/createGoogleServiseKey';
@@ -19,16 +18,16 @@ export default async function handler(req, res) {
     case 'POST':
       try {
         console.log('req.socket.bytesRead', req.socket.bytesRead);// add check for size
-        const { base64, type, filename } = req.body;
-        const img = Buffer.from(base64, 'base64');
-        const temp_filepath = path.join(os.tmpdir(), filename); 
+        const { base64, type, filename } = req.body
+        const img = Buffer.from(base64, 'base64')
+        const temp_filepath = path.join( filename)
 
         await fs.outputFile(temp_filepath, img, (err) => {
           if (err) throw err
         })
 
         const storage = new Storage({ projectId: 'next-dog-509c7', keyFilename: pathGoogleKey });
-        const bucket = storage.bucket(bucketName);
+        const bucket = storage.bucket(bucketName)
 
         await bucket.upload(temp_filepath, {
           metadata: {
