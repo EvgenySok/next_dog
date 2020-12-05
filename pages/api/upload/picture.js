@@ -38,18 +38,18 @@ export default async function handler(req, res) {
             },
           },
         }, (err, file) => {
-          if (err) throw err;
+          if (err) throw err
         });
 
         fs.unlinkSync(temp_filepath)
         const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${filename}?alt=media&token=${uuid}`;
-        res.json({ fileUrl });
+        res.json({ fileUrl })
       } catch (error) {
-        res.status(400).json({ success4: false, error });
+        res.status(400).json({ success4: false, error })
       }
       break;
     default:
-      res.status(400).json({ success: false });
+      res.status(400).json({ success: false })
       break;
   }
 }
