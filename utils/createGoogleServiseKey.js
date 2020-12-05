@@ -1,14 +1,21 @@
 import * as fs from 'fs'
-import { resolve } from 'path'
+import { join } from 'path'
+
+export const pathGoogleKey = join('./', 'service-account-key.json')
 
 export default async function createKeyJson() {
-  if (fs.existsSync(resolve('./service-account-key.json'))) {
-    return
+  try {
+    if (fs.existsSync(pathGoogleKey)) {
+      return 
+    }
+    const credential = Buffer.from(process.env.GOOGLE_SERVICE_KEY, "base64").toString()
+
+    await fs.writeFile(pathGoogleKey, credential, 'utf8', (err) => {
+      if (err) throw err
+    })
+    return 
+  } catch (error) {
+    return error
   }
-  const credential = Buffer.from(process.env.GOOGLE_SERVICE_KEY, "base64").toString()
-  
-  await fs.writeFile(resolve('./service-account-key.json'), credential, 'utf8', (err) => {
-    if (err) throw err
-  })
-  return
+
 }
