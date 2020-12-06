@@ -1,10 +1,11 @@
 import * as path from 'path';
-import * as fs from 'fs-extra';
+// import * as fs from 'fs-extra';
+import * as fs from 'fs'
 import dbConnect from '../../../utils/dbConnect';
-import createKeyJson, { pathGoogleKey } from '../../../utils/createGoogleServiseKey';
+import createKeyJson, { dir, pathGoogleKey } from '../../../utils/createGoogleServiseKey';
 
 const { Storage } = require('@google-cloud/storage');
-
+const shortid = require('shortid')
 const UUID = require('uuid-v4')
 
 export default async function handler(req, res) {
@@ -20,16 +21,16 @@ export default async function handler(req, res) {
         console.log('req.socket.bytesRead', req.socket.bytesRead);// add check for size
         const { base64, type, filename } = req.body
         const img = Buffer.from(base64, 'base64')
-        const temp_filepath = path.join( filename)
+        const rundomFileName = shortid.generate() + filename.slice(-4)
+        const temp_filepath = path.resolve(dir, rundomFileName)
 
-        await fs.outputFile(temp_filepath, img, (err) => {
-          if (err) throw err
+        fs.writeFileSync(temp_filepath, img, (err) => {
+          if (err) throw new Error('fs.outputFile', err)
         })
 
         const storage = new Storage({ projectId: 'next-dog-509c7', keyFilename: pathGoogleKey });
         const bucket = storage.bucket(bucketName)
-
-        await bucket.upload(temp_filepath, {
+        bucket.upload(path.join( dir, rundomFileName), {
           metadata: {
             contentType: `${type}`,
             metadata: {
@@ -37,12 +38,14 @@ export default async function handler(req, res) {
             },
           },
         }, (err, file) => {
-          if (err) throw err
-        });
+            if (err) { 
+              res.status(400).json({ message: 'bucket.upload', err })
+            }
+            fs.unlinkSync(temp_filepath)
+            const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${rundomFileName}?alt=media&token=${uuid}`;
+            res.json({ fileUrl })
 
-        fs.unlinkSync(temp_filepath)
-        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${filename}?alt=media&token=${uuid}`;
-        res.json({ fileUrl })
+        })
       } catch (error) {
         res.status(400).json({ success4: false, error })
       }
