@@ -7,7 +7,8 @@ import sanitizeHtml from 'sanitize-html'
 
 const CreateNews = ({ user }) => {
   const handleEditorChange = (content, editor) => {
-    // console.log('Content was updated:', sanitizeHtml(content));
+    console.log('Content was updated:', content);
+    console.log('editor:', sanitizeHtml(editor));
   }
 
   const Editor = dynamic(() => import('../components/Editor.js'),

@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
-import { Editor } from '@tinymce/tinymce-react';
-import Head from "next/head";
-import { postData } from "../secondary-functions/requests";
+import React, { useEffect } from "react"
+import { Editor } from '@tinymce/tinymce-react'
+import Head from "next/head"
+import { postData } from "../secondary-functions/requests"
+const Compress = require('compress.js')
 
 const EditorComponent = ({ handleEditorChange }) => {
+
+  const compress = new Compress()
 
   useEffect(() => {
     const observer = new MutationObserver(async function (mutationsList, observer) {
@@ -36,8 +39,9 @@ const EditorComponent = ({ handleEditorChange }) => {
           images_reuse_filename: true,
           images_upload_url: 'api/upload/picture',
           images_upload_handler: async function (blobInfo, success, failure) {
+            const compressedFile = await compress.compress([blobInfo.blob()], {  quality: 0.8 })
             const res = await postData({
-              base64: blobInfo.base64(),
+              base64: compressedFile[0].data,
               type: blobInfo.blob().type,
               filename: blobInfo.filename(),
             }, 'api/upload/picture')

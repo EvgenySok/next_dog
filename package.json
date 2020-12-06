@@ -10,6 +10,7 @@
     "@google-cloud/storage": "^5.5.0",
     "@tinymce/tinymce-react": "^3.8.1",
     "bcryptjs": "^2.4.3",
+    "compress.js": "^1.1.2",
     "cookie": "^0.4.1",
     "formik": "^2.2.5",
     "fs-extra": "^9.0.1",
