@@ -25,6 +25,8 @@ const SignIn = () => {
 				const errorsFromServer = await postData(values, '/api/auth/signIn')
 				if (errorsFromServer) {
 					formikRef.current.setErrors(errorsFromServer)
+					console.log('errorsFromServer:', formikRef.current)
+
 				}
 				formikRef.current.setSubmitting(false)
 			} catch (e) {
@@ -88,62 +90,66 @@ const SignIn = () => {
 
 			</Head>
 
-			<div>
-				<h1>Sign In!</h1>
-				<div>
-					<Formik
-						innerRef={formikRef}
-						initialValues={{ email: '', password: '' }}
-						validationSchema={SigninValidateSchema}
-						onSubmit={onSubmit}
-					>
-						{({
-							values,
-							errors,
-							touched,
-							handleChange,
-							handleBlur,
-							handleSubmit,
-							isSubmitting, }) => (
-								<form onSubmit={handleSubmit}>
-									<h3>email</h3>
-									<Field type="email" name="email" />
+			<div className="form">
+				<div className="header">Sign In!</div>
+				<Formik
+					innerRef={formikRef}
+					initialValues={{ email: '', password: '' }}
+					validationSchema={SigninValidateSchema}
+					onSubmit={onSubmit}
+
+					handleChange={(values) => { }}
+				>
+					{({
+						values,
+						errors,
+						touched,
+						handleChange,
+						handleBlur,
+						handleSubmit,
+						isSubmitting, }) => (
+							<form onSubmit={handleSubmit}>
+								<div className="field-wrap">
+									<label className={values.email ? "active" : ""} >Email Address<span>*</span></label>
+									<Field type="email" name="email" onChange={handleChange} />
 									<ErrorMessage name="email" component="div" />
-									<h3>password</h3>
-									<Field type="password" name="password" autoComplete="new-password" />
+								</div>
+								<div className="field-wrap">
+									<label className={values.password ? "active" : ""}>Password<span>*</span></label>
+									<Field type="password" name="password" />
 									<ErrorMessage name="password" component="div" />
-									{errors.success ? (<div>{errors.success} </div>) : null}
-									{errors.error ? (<div>{errors.error} </div>) : null}
-									<button type="submit" disabled={isSubmitting}>
-										Submit
-              </button>
-								</form>
-							)}
-					</Formik >
-					<br />
-					<div className="">
-						<span className="">
-							Don’t have an account?
-						</span>
+									<div>
+										{errors.success ? (<div>{errors.success} </div>) : null}
+										{errors.error ? (<div>{errors.error} </div>) : null}
+									</div>
+								</div>
 
-						<Link href="/signUp">
-							<a>Sign Up</a>
-						</Link>
+								<button type="submit" className="button" disabled={isSubmitting}>
+									Submit
+                </button>
+							</form>
+						)}
+				</Formik >
+				<br />
+				<Link href="/signUp">
+					<a className="">Don’t have an account?</a>
+				</Link>
+				<br />
+				<Link href="/">
+					<a className="">Forgot Password?</a>
+				</Link>
+				<br />
+				<a href="#" onClick={signInWithGoogle}>Sign in with Google</a>
+				<br />
+				<a href="#" onClick={signOut}>Sign out</a>
 
-					</div>
-					<br />
-					<a href="#" onClick={signInWithGoogle}>Sign in with Google</a>
-					<br />
-					<a href="#" onClick={signOut}>Sign out</a>
+				<br />
+				<a href="#" onClick={signInWithFacebook}>Sign in with Facebook</a>
+				<br />
+				<a href="#" onClick={signOut}>Sign out</a>
+				<div id="status"></div>
 
-					<br />
-					<a href="#" onClick={signInWithFacebook}>Sign in with Facebook</a>
-					<br />
-					<a href="#" onClick={signOut}>Sign out</a>
-					<div id="status"></div>
-
-				</div>
-			</div >
+			</div>
 		</>
 	)
 }

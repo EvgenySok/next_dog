@@ -17,6 +17,9 @@ function App({ Component, pageProps }) {
           <Link href="/new">
             <a>Add Pet</a>
           </Link>
+          <Link href="/familyTree">
+            <a>Family Tree</a>
+          </Link>
           <Link href="/createNews">
             <a>Create news</a>
           </Link>

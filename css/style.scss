@@ -1,9 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
 
+$fontfamily: "Open Sans";
 
+$minViewportWidth: 320;
+$maxViewportWidth: 1280; // for adaptive fs
+
+
+@import 'nullstyle.scss';
 @import 'form.scss';
 @import 'signIn.scss';
-
+@import 'familyTree.scss';
 
 
 * {
@@ -120,10 +126,10 @@ h5.pet-name {
   border-radius: 7px;
 }
 
-li {
-  list-style-type: none;
-  margin: 0;
-}
+// li {
+//   list-style-type: none;
+//   margin: 0;
+// }
 
 .info {
   color: rgb(83, 83, 83);

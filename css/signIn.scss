@@ -1,0 +1,115 @@
+$focusColor: #10b981;
+$successColor: #10b981;
+$errorColor: #f56565;
+$mainColor: #292929;
+$textColor: #999999;
+$borderColor: #999999;
+$buttonColor: #999999;
+$buttonActiveColor:#292929;
+
+$fontSizeMain: 22px;
+$fontSizeAuxiliary: 14px;
+
+/* Change autocomplete styles in WebKit */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid $mainColor;
+  -webkit-text-fill-color: $mainColor;
+  -webkit-box-shadow: 0 0 0px 1000px rgb(255, 255, 255) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+.form {
+  .header{
+    text-align: center;
+    color: $mainColor;
+    font-size: $fontSizeMain*2;
+  }
+  .field-wrap {
+    position: relative;
+    margin: $fontSizeMain * 2 0;
+    label {
+      position: absolute;
+      top: $fontSizeMain/4 + 0.2 * $fontSizeMain;
+      left: $fontSizeMain/2;
+      color: rgba($textColor, 0.5);
+      transition: all 0.25s ease;
+      backface-visibility: hidden;
+      pointer-events: none;
+      font-size: $fontSizeMain;
+      span {
+        opacity: 1;
+      }
+    }
+    label.active {
+      transform: translateY(-$fontSizeAuxiliary * 2);
+      left: 2px;
+      font-size: $fontSizeAuxiliary;
+      span {
+        opacity: 0;
+      }
+    }
+
+    input {
+      font-size: $fontSizeMain;
+      line-height: $fontSizeMain;
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: ($fontSizeMain/4) ($fontSizeMain/2);
+      background: none;
+      background-image: none;
+      background-color: #fff !important;
+      border: 1px solid $borderColor;
+      color: $textColor;
+      border-radius: 0;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      &:focus {
+        outline: 0;
+        border-color: $focusColor;
+      }
+    }
+
+    div {
+      position: absolute;
+      width: 100%;
+      bottom: left;
+      padding: 2px;
+      height: $fontSizeMain * 2;
+      color: $errorColor;
+    }
+    div.success {
+      color: $successColor;
+    }
+  }
+
+
+  .button {
+    width: 100%;
+    border: 1px solid black;
+    outline:none;
+    border-radius:0;
+    padding:$fontSizeAuxiliary/2 0;
+    font-size:1rem;
+    font-weight: bold;
+    text-transform:uppercase;
+    letter-spacing: 0.5em;
+    background: rgb(255, 255, 255);
+    color: black;
+    transition:all 0.5s ease;
+    -webkit-appearance: none;
+    &:hover, &:focus {
+      background:$buttonActiveColor;
+      color: rgb(255, 255, 255);
+    }
+  }
+}

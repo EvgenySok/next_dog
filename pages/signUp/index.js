@@ -18,20 +18,20 @@ const SignUp = () => {
       } catch (e) {
         formikRef.current.setErrors({ error: 'Sorry, something went wrong, please try again.' })
         formikRef.current.setSubmitting(false)
-
       }
     }
     foo()
   })
 
   return (
-    <div>
-      <h1>User registration</h1>
+    <div className="form">
+      <div className="header">User registration</div>
       <Formik
         innerRef={formikRef}
         initialValues={{ email: '', password: '' }}
         validationSchema={SignupValidateSchema}
         onSubmit={onSubmit}
+
       >
         {({
           values,
@@ -40,25 +40,30 @@ const SignUp = () => {
           handleChange,
           handleBlur,
           handleSubmit,
-          isSubmitting,
-          /* and other goodies */
-        }) => (
+          isSubmitting, }) => (
             <form onSubmit={handleSubmit}>
-              <h3>email</h3>
-              <Field type="email" name="email" />
-              <ErrorMessage name="email" component="div" />
-              <h3>password</h3>
-              <Field type="password" name="password" autoComplete="new-password" />
-              <ErrorMessage name="password" component="div" />
-              {errors.success ? (<div>{errors.success} </div>) : null}
-              {errors.error ? (<div>{errors.error} </div>) : null}
-              <button type="submit" disabled={isSubmitting}>
+              <div className="field-wrap">
+                <label className={values.email ? "active" : ""} >Email Address<span>*</span></label>
+                <Field type="email" name="email" onChange={handleChange} />
+                <ErrorMessage name="email" component="div" />
+              </div>
+              <div className="field-wrap">
+                <label className={values.password ? "active" : ""}>Password<span>*</span></label>
+                <Field type="password" name="password" />
+                <ErrorMessage name="password" component="div" />
+                <div>
+                  {errors.success ? (<div>{errors.success} </div>) : null}
+                  {errors.error ? (<div>{errors.error} </div>) : null}
+                </div>
+              </div>
+
+              <button type="submit" className="button" disabled={isSubmitting}>
                 Submit
-              </button>
+                </button>
             </form>
-          )
-        }
-      </Formik>
-    </div>)
+          )}
+      </Formik >
+    </div>
+  )
 }
 export default SignUp
