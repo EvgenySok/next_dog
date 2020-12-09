@@ -30,12 +30,12 @@ export default async function handler(req, res) {
             const userid = payload['sub']
 
             const { email, email_verified, given_name, family_name, picture } = payload
-            console.log('user data from google:', { email, email_verified, given_name, family_name, picture })
+            console.log('user data from google:', { email, email_verified, given_name, family_name, locale, picture })
             res.json({ ticket, payload, userid })
             // If request specified a G Suite domain:
             // const domain = payload['hd'];
           }
-          
+
           await verify().catch(console.error)
 
         } catch (error) {
@@ -45,34 +45,25 @@ export default async function handler(req, res) {
           }])
         }
         break
-        case 'facebook':
-          try {
-            const { FacebookUserId_token } = req.body
-            const client = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)
-            async function verify() {
-              const ticket = await client.verifyIdToken({
-                idToken: GoogleUserId_token,
-                audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
-              })
-              const payload = ticket.getPayload()
-              const userid = payload['sub']
-  
-              const { email, email_verified, given_name, family_name, picture } = payload
-              console.log('user data from google:', { email, email_verified, given_name, family_name, picture })
-              res.json({ ticket, payload, userid })
-              // If request specified a G Suite domain:
-              // const domain = payload['hd'];
-            }
-            
-            await verify().catch(console.error)
-  
-          } catch (error) {
-            res.status(403).json([{
-              msg: `Error while OAuth on the server with ${req.body.provider}.`,
-              error: error.message
-            }])
-          }
-          break
+      case 'facebook':
+        try {
+          const { accessToken, signedRequest } = req.body.authResponse
+          // get access_token for app
+          const res1 = await fetch(`https://graph.facebook.com/oauth/access_token?client_id=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&client_secret=${process.env.FACEBOOK_APP_SECRET}&grant_type=client_credentials`)
+          const { access_token } = await res1.json()
+          console.log('accessToken:', access_token)
+          // get user info
+          const res2 = await fetch(`https://graph.facebook.com/debug_token?input_token=${accessToken}&access_token=${access_token}`)
+          const json = await res2.json()
+          console.log(' get user info:', json)
+          res.send(res2)
+        } catch (error) {
+          res.status(403).json([{
+            msg: `Error while OAuth on the server with ${req.body.provider}.`,
+            error: error.message
+          }])
+        }
+        break
       default:
         res.status(404).json(new Error('Request OAuth not defined.'))
         break

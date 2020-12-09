@@ -9,14 +9,14 @@ const SignIn = () => {
 	const formikRef = useRef();
 
 	useEffect(() => {
-		window.fbAsyncInit = function () {
+		window.fbAsyncInit = (function () {
 			FB.init({
 				appId: `${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`,
 				cookie: true,                     // Enable cookies to allow the server to access the session.
 				xfbml: true,                     // Parse social plugins on this webpage.
 				version: `${process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION}`           // Use this Graph API version for this call.
 			})
-		}
+		})()
 	}, [])
 
 	const onSubmit = useCallback((values) => {
@@ -67,14 +67,12 @@ const SignIn = () => {
 
 	// facebook // 
 	function signInWithFacebook() {
-		FB.login(function (response) {
-			console.log('response facebook:', response, 'response.email', response.email, 'response.public_profile', response.public_profile,);
-
+		FB.login(async function (response) {
+			console.log('response facebook:', response);
 			if (response.status === 'connected') {
-				// Logged into your webpage and Facebook.
-			} else {
-				// The person is not logged into your webpage or we are unable to tell. 
-			}
+				const { authResponse } = response
+				postData({ provider: 'facebook', authResponse }, '/api/auth/OAuth')
+			} 
 		}, { scope: 'public_profile,email' })
 	}
 
