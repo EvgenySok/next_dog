@@ -52,7 +52,7 @@ const SignUp = () => {
                 <Field type="password" name="password" />
                 <ErrorMessage name="password" component="div" />
                 <div>
-                  {errors.success ? (<div>{errors.success} </div>) : null}
+                  {errors.success ? (<div className="success">{errors.success} </div>) : null}
                   {errors.error ? (<div>{errors.error} </div>) : null}
                 </div>
               </div>
