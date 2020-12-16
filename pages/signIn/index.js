@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect } from 'react'
+import React, { useRef, useCallback, useEffect, useState } from 'react'
 import Head from "next/head"
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import Link from 'next/link'
@@ -8,16 +8,16 @@ import { SigninValidateSchema } from '../../validate/authValidate'
 const SignIn = () => {
 	const formikRef = useRef();
 
-	useEffect(() => {
-		window.fbAsyncInit = (function () {
-			FB.init({
-				appId: `${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`,
-				cookie: true,                     // Enable cookies to allow the server to access the session.
-				xfbml: true,                     // Parse social plugins on this webpage.
-				version: `${process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION}`           // Use this Graph API version for this call.
-			})
-		})()
-	}, [])
+	// useEffect(() => {
+	// 	window.fbAsyncInit = (function () {
+	// 		FB.init({
+	// 			appId: `${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`,
+	// 			cookie: true,                     // Enable cookies to allow the server to access the session.
+	// 			xfbml: true,                     // Parse social plugins on this webpage.
+	// 			version: `${process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION}`           // Use this Graph API version for this call.
+	// 		})
+	// 	})()
+	// }, [])
 
 	const onSubmit = useCallback((values) => {
 		async function foo() {
@@ -67,12 +67,21 @@ const SignIn = () => {
 
 	// facebook // 
 	function signInWithFacebook() {
+		window.fbAsyncInit = (function () {
+			FB.init({
+				appId: `${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`,
+				cookie: true,                     // Enable cookies to allow the server to access the session.
+				xfbml: true,                     // Parse social plugins on this webpage.
+				version: `${process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION}`           // Use this Graph API version for this call.
+			})
+		})()
+		
 		FB.login(async function (response) {
 			console.log('response facebook:', response);
 			if (response.status === 'connected') {
 				const { authResponse } = response
 				postData({ provider: 'facebook', authResponse }, '/api/auth/OAuth')
-			} 
+			}
 		}, { scope: 'public_profile,email' })
 	}
 
