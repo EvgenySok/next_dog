@@ -49,14 +49,22 @@ export default async function handler(req, res) {
         try {
           const { accessToken, signedRequest } = req.body.authResponse
           // get access_token for app
-          const res1 = await fetch(`https://graph.facebook.com/oauth/access_token?client_id=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&client_secret=${process.env.FACEBOOK_APP_SECRET}&grant_type=client_credentials`)
-          const { access_token } = await res1.json()
-          console.log('accessToken:', access_token)
+          // const res1 = await fetch(`https://graph.facebook.com/oauth/access_token?client_id=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&client_secret=${process.env.FACEBOOK_APP_SECRET}&grant_type=client_credentials`)
+          // const { access_token } = await res1.json()
+          // console.log('accessToken:', access_token)
+          // get user id
+          // const res2 = await fetch(`https://graph.facebook.com/debug_token?input_token=${accessToken}&access_token=${access_token}`)
+          // const { data } = await res2.json()
+          // console.log(' get user_id:', data.user_id)
           // get user info
-          const res2 = await fetch(`https://graph.facebook.com/debug_token?input_token=${accessToken}&access_token=${access_token}`)
-          const json = await res2.json()
-          console.log(' get user info:', json)
-          res.send(res2)
+          
+          const res3 = await fetch(`https://graph.facebook.com/me?access_token=${accessToken}`)
+          // const res3 = await fetch(`https://graph.facebook.com/me?fields=id,email&access_token=${accessToken}`)
+          // const res3 = await fetch(`https://graph.facebook.com/debug_token?input_token=${accessToken}?client_id=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&scope=email`)
+          const result = await res3.json()
+          console.log(' get user info:', result)
+
+          res.send(result)
         } catch (error) {
           res.status(403).json([{
             msg: `Error while OAuth on the server with ${req.body.provider}.`,
