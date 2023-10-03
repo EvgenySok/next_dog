@@ -18,7 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.22.0",
     "mongoose": "^5.10.15",
-    "next": "^9.4.2",
+    "next": "^13.5.4",
     "next-iron-session": "^4.1.10",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
