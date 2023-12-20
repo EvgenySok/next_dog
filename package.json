@@ -7,7 +7,7 @@
     "start": "next start -p $PORT"
   },
   "dependencies": {
-    "@google-cloud/storage": "^5.5.0",
+    "@google-cloud/storage": "^5.17.0",
     "@tinymce/tinymce-react": "^3.8.1",
     "bcryptjs": "^2.4.3",
     "compress.js": "^1.1.2",
@@ -18,7 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.22.0",
     "mongoose": "^5.10.15",
-    "next": "^9.4.2",
+    "next": "^10.0.2",
     "next-iron-session": "^4.1.10",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
