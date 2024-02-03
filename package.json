@@ -19,7 +19,7 @@
     "mailgun-js": "^0.22.0",
     "mongoose": "^5.10.15",
     "next": "^9.4.2",
-    "next-iron-session": "^4.1.10",
+    "next-iron-session": "^4.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "sanitize-html": "^2.2.0",
